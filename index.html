@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網路測試工具 - Network Test Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-network-wired"></i> 網路測試工具</h1>
+            <p>全方位網路連線品質檢測</p>
+        </header>
+
+        <div class="user-info">
+            <div class="info-card">
+                <h3><i class="fas fa-globe"></i> 您的連線資訊</h3>
+                <div id="user-ip-info">
+                    <p><strong>IP 位址：</strong><span id="user-ip">檢測中...</span></p>
+                    <p><strong>網路供應商：</strong><span id="user-isp">檢測中...</span></p>
+                    <p><strong>位置：</strong><span id="user-location">檢測中...</span></p>
+                    <p><strong>連線類型：</strong><span id="connection-type">檢測中...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-grid">
+            <!-- 速度測試 -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h3>網路速度測試</h3>
+                </div>
+                <div class="test-content">
+                    <div class="speed-display">
+                        <div class="speed-item">
+                            <span class="speed-label">下載速度</span>
+                            <span class="speed-value" id="download-speed">-- Mbps</span>
+                        </div>
+                        <div class="speed-item">
+                            <span class="speed-label">上傳速度</span>
+                            <span class="speed-value" id="upload-speed">-- Mbps</span>
+                        </div>
+                        <div class="speed-item">
+                            <span class="speed-label">延遲</span>
+                            <span class="speed-value" id="ping">-- ms</span>
+                        </div>
+                    </div>
+                    <button class="test-btn" id="speed-test-btn" onclick="startSpeedTest()">
+                        <i class="fas fa-play"></i> 開始速度測試
+                    </button>
+                    <div class="progress-bar" id="speed-progress" style="display: none;">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 抖動測試 -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>抖動測試</h3>
+                </div>
+                <div class="test-content">
+                    <div class="jitter-display">
+                        <div class="jitter-item">
+                            <span class="jitter-label">平均抖動</span>
+                            <span class="jitter-value" id="avg-jitter">-- ms</span>
+                        </div>
+                        <div class="jitter-item">
+                            <span class="jitter-label">最大抖動</span>
+                            <span class="jitter-value" id="max-jitter">-- ms</span>
+                        </div>
+                    </div>
+                    <button class="test-btn" id="jitter-test-btn" onclick="startJitterTest()">
+                        <i class="fas fa-play"></i> 開始抖動測試
+                    </button>
+                    <div class="progress-bar" id="jitter-progress" style="display: none;">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 封包遺失測試 -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>封包遺失測試</h3>
+                </div>
+                <div class="test-content">
+                    <div class="packet-display">
+                        <div class="packet-item">
+                            <span class="packet-label">封包遺失率</span>
+                            <span class="packet-value" id="packet-loss">-- %</span>
+                        </div>
+                        <div class="packet-item">
+                            <span class="packet-label">測試封包數</span>
+                            <span class="packet-value" id="packet-count">100</span>
+                        </div>
+                    </div>
+                    <button class="test-btn" id="packet-test-btn" onclick="startPacketTest()">
+                        <i class="fas fa-play"></i> 開始封包測試
+                    </button>
+                    <div class="progress-bar" id="packet-progress" style="display: none;">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 伺服器測試 -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-server"></i>
+                    <h3>伺服器連線測試</h3>
+                </div>
+                <div class="test-content">
+                    <div class="server-list" id="server-list">
+                        <!-- 伺服器列表將動態生成 -->
+                    </div>
+                    <button class="test-btn" id="server-test-btn" onclick="startServerTest()">
+                        <i class="fas fa-play"></i> 測試所有伺服器
+                    </button>
+                    <div class="progress-bar" id="server-progress" style="display: none;">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DNS 測試 -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-globe-americas"></i>
+                    <h3>DNS 解析測試</h3>
+                </div>
+                <div class="test-content">
+                    <div class="dns-display">
+                        <div class="dns-item">
+                            <span class="dns-label">DNS 伺服器</span>
+                            <span class="dns-value" id="dns-server">檢測中...</span>
+                        </div>
+                        <div class="dns-item">
+                            <span class="dns-label">解析時間</span>
+                            <span class="dns-value" id="dns-time">-- ms</span>
+                        </div>
+                    </div>
+                    <button class="test-btn" id="dns-test-btn" onclick="startDNSTest()">
+                        <i class="fas fa-play"></i> 開始 DNS 測試
+                    </button>
+                </div>
+            </div>
+
+            <!-- 完整報告 -->
+            <div class="test-card full-width">
+                <div class="test-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>完整測試報告</h3>
+                </div>
+                <div class="test-content">
+                    <button class="test-btn primary" id="full-test-btn" onclick="startFullTest()">
+                        <i class="fas fa-rocket"></i> 執行完整測試
+                    </button>
+                    <div class="report-section" id="test-report" style="display: none;">
+                        <h4>測試結果摘要</h4>
+                        <div id="report-content"></div>
+                        <div class="report-actions">
+                            <button class="export-btn" onclick="exportReport()">
+                                <i class="fas fa-download"></i> 匯出報告
+                            </button>
+                            <button class="share-btn" onclick="shareReport()">
+                                <i class="fas fa-share"></i> 分享結果
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 網路測試工具 | 提供準確的網路連線品質檢測</p>
+        </footer>
+    </div>
+
+    <script src="network-test.js"></script>
+</body>
+</html>
